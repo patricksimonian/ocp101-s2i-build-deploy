@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  Caddyfile: |
+    0.0.0.0:2015
+    root /var/www/html
+    log stdout
+    errors stdout
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: caddy-${NAME}-static${SUFFIX}
+  labels:
+    app: ${NAME}-static${SUFFIX}
+    deploymentconfig: ${NAME}-static${SUFFIX}
+    app-name: ${NAME}-static${SUFFIX}

@@ -1,0 +1,60 @@
+kind: List
+items: 
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: ocp101-demo-static
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      build: ocp101-demo-static
+    name: ocp101-demo-static
+  spec:
+    runPolicy: SerialLatestOnly
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ocp101-demo-static:latest
+    postCommit: {}
+    resources:
+      requests:
+        cpu: 1
+        memory: 500Mi
+      limits:
+        cpu: 2
+        memory: 750Mi
+    source:
+      dockerfile: |-
+        FROM nodejs/build-output:latest
+        COPY html/* /var/www/html/
+      images:
+        - from:
+            kind: ImageStreamTag
+            name: 'ocp101-demo:latest'
+          paths:
+            - destinationDir: html
+              sourcePath: /opt/app-root/src/public/
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: 'bcgov-s2i-caddy:latest'
+          namespace: openshift
+      type: Docker
+    triggers:
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: ocp101-demo:latest
+      type: ImageChange
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
