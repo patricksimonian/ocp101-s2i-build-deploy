@@ -1,0 +1,121 @@
+apiVersion: v1
+items:
+- apiVersion: image.openshift.io/v1
+  generation: 0
+  image:
+    dockerImageLayers: null
+    dockerImageMetadata:
+      ContainerConfig: {}
+      Created: null
+      Id: ""
+      apiVersion: "1.0"
+      kind: DockerImage
+    dockerImageMetadataVersion: "1.0"
+    metadata:
+      creationTimestamp: null
+  kind: ImageStreamTag
+  lookupPolicy:
+    local: false
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/imported-from: docker-registry.default.svc:5000/ocp101a-tools/ocp101-demo-static:latest
+    creationTimestamp: null
+    labels:
+      app: ocp101-frontend
+    name: ocp101-frontend:latest
+  tag:
+    annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/ocp101a-tools/ocp101-demo-static:latest
+    generation: null
+    importPolicy: {}
+    name: latest
+    referencePolicy:
+      type: ""
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ocp101-frontend
+    name: ocp101-frontend
+  spec:
+    replicas: 1
+    selector:
+      app: ocp101-frontend
+      deploymentconfig: ocp101-frontend
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: ocp101-frontend
+          deploymentconfig: ocp101-frontend
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/ocp101a-tools/ocp101-demo-static:latest
+          name: ocp101-frontend
+          args:
+          - /tmp/scripts/run
+          ports:
+          - containerPort: 2015
+            protocol: TCP
+          resources: {}
+          volumeMounts:
+          - name: caddy-ocp101-demo-static
+            mountPath: /etc/Caddyfile
+            readOnly: true
+            subPath: Caddyfile
+        volumes:
+        - name: caddy-ocp101-demo-static
+          configMap:
+            defaultMode: 420
+            name: caddy-ocp101-demo-static
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ocp101-frontend
+        from:
+          kind: ImageStreamTag
+          name: ocp101-demo-static:latest
+          namespace: ocp101a-tools
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ocp101-frontend
+    name: ocp101-frontend
+  spec:
+    ports:
+    - name: 2015-tcp
+      port: 2015
+      protocol: TCP
+      targetPort: 2015
+    selector:
+      app: ocp101-frontend
+      deploymentconfig: ocp101-frontend
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}

@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ocp101-frontend
+  name: ocp101-front-end
+spec:
+  host: ""
+  port:
+    targetPort: 2015-tcp
+  to:
+    kind: ""
+    name: ocp101-frontend
+    weight: null
+status:
+  ingress: null

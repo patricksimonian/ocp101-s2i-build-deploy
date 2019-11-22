@@ -8,8 +8,8 @@ data:
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: caddy-${NAME}-static${SUFFIX}
+  name: caddy-ocp101-demo-static
   labels:
-    app: ${NAME}-static${SUFFIX}
-    deploymentconfig: ${NAME}-static${SUFFIX}
-    app-name: ${NAME}-static${SUFFIX}
+    app: ocp101-demo-static
+    deploymentconfig: ocp101-demo-static
+    app-name: ocp101-demo-static
